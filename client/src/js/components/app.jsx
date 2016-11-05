@@ -9,44 +9,60 @@ var App = React.createClass({
   getInitialState: function() {
     return {
       user: "admin",
-      sudDist: ["distributor1", "distributor2", "distributor3", "distributor4", "distributor5"]
+      subDist: ["distributor1", "distributor2", "distributor3"],
+      allAreas: []
     }
   },
   componentWillMount: function() {
     helper.initiateDB();
+    helper.loadDummyDB(() => {
+      helper.viewDB("movies");
+      this.forceUpdate();
+    });
+    helper.getAllAreas((arr) => {
+      this.setState({
+        allAreas: arr
+      })
+    });
   },
-  selectUser: function() {
-    this.setState({
-      user: this.refs.user.value
-    })
+  componentWillReceiveProps: function(nP) {
+
+  },
+  selectMainUser: function() {
+    let u = this.refs.user.value;
+    helper.getSubDist(u, (err, arr) => {
+      if(err) console.error("error: ", err);
+      this.setState({
+        user: u,
+        subDist: arr
+      });
+    });
   },
   render: function() {
     return (
       <div>
         <div id="edit-form">
-          <EditForm toggleForm={toggleForm} subDist={this.state.subDist}></EditForm>
+          <EditForm toggleForm={toggleForm} user={this.state.user}></EditForm>
         </div>
         <header>
           <h1>Welcome {this.state.user}</h1>
           <span>
             <p>Select User</p>
-            <select ref="user" name="user" onChange={this.selectUser}>
+            <select ref="user" name="user" onChange={this.selectMainUser}>
               <option value="admin">admin</option>
               <option value="distributor1">distributor1</option>
               <option value="distributor2">distributor2</option>
               <option value="distributor3">distributor3</option>
-              <option value="distributor4">distributor4</option>
-              <option value="distributor5">distributor5</option>
             </select>
           </span>
         </header>
         <div id="left-column">
-          <PermissionChecker></PermissionChecker>
-          <SelfInfo></SelfInfo>
+          <PermissionChecker subDist={this.state.subDist} allAreas={this.state.allAreas}></PermissionChecker>
+          <SelfInfo user={this.state.user}></SelfInfo>
         </div>
         <div id="right-column">
           <div id="scroll-area">
-            <SubDistInfo></SubDistInfo>
+            <SubDistInfo subDist={this.state.subDist}></SubDistInfo>
           </div>
           <div className="button-bar">
             <span>
@@ -65,6 +81,6 @@ var toggleForm = function() {
     temp.style.display = 'none';
   else
     temp.style.display = 'block';
-}
+};
 
 module.exports = App;
