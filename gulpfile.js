@@ -20,6 +20,7 @@ gulp.task('copy', function(){
     gulp.src('./client/src/fonts/**/*.*').pipe(gulp.dest(dest+'/fonts'));
     gulp.src('./client/src/images/*.*').pipe(gulp.dest(dest+'/images'));
     gulp.src('./client/src/js/vendor/*.*').pipe(gulp.dest(dest+'/js/vendor'));
+    gulp.src('./client/src/assets/*.*').pipe(gulp.dest(dest+'/assets'));
 });
 
 gulp.task('default',  ['browserify', 'copy'], function() {

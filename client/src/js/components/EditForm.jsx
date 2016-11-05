@@ -2,7 +2,7 @@ var React = require('react');
 
 var EditForm = React.createClass({
   getOptionList: function() {
-    let subDist = ["distributor1", "distributor2", "distributor3", "distributor4", "distributor5"];
+    let subDist = ["distributor1", "distributor2", "distributor3"];
     let optionList = [];
     subDist.forEach(function(name, i) {
       optionList.push(

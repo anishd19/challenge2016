@@ -3,6 +3,7 @@ var EditForm = require('./EditForm.jsx');
 var PermissionChecker = require('./PermissionChecker.jsx');
 var SelfInfo = require('./SelfInfo.jsx');
 var SubDistInfo = require('./SubDistInfo.jsx');
+var helper = require('../helper.js');
 
 var App = React.createClass({
   getInitialState: function() {
@@ -10,6 +11,9 @@ var App = React.createClass({
       user: "admin",
       sudDist: ["distributor1", "distributor2", "distributor3", "distributor4", "distributor5"]
     }
+  },
+  componentWillMount: function() {
+    helper.initiateDB();
   },
   selectUser: function() {
     this.setState({
