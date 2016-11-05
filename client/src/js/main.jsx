@@ -1,12 +1,5 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var App = require('./components/app.jsx');
 
-var Foo = React.createClass({
-  render: function(){
-    return (
-      <h1>Hello World!</h1>
-    );
-  }
-})
-
-ReactDOM.render(<Foo />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById("app"));

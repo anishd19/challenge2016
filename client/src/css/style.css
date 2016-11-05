@@ -1,0 +1,176 @@
+* {
+margin: 0;
+padding: 0;
+}
+
+h1, p {
+  display: inline;
+}
+
+button {
+  padding: 15px;
+  border-radius: 10px;
+}
+
+header {
+  width: 100%;
+  height: 50px;
+  background-color: #2B2B2B;
+  color: white;
+}
+
+header span {
+  float: right;
+  margin: 15px;
+}
+
+#left-column, #right-column {
+  width: 50%;
+  height: 700px;
+}
+
+#left-column {
+  float: left;
+  !background-color: orange;
+}
+
+#right-column {
+  float: right;
+  !background-color: blue;
+}
+
+#lc, #rc {
+  width: 50%;
+  height: 380px;
+}
+
+#lc {
+  float: left;
+}
+
+#rc {
+  float: right;
+}
+
+#scroll-area {
+  overflow: scroll;
+  height: 750px;
+}
+
+#permission-checker, .info-panel {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background-color: #D6D6D6;
+  border-radius: 10px;
+  border-bottom: solid 3px #2B2B2B;
+}
+
+#permission-checker {
+  min-height: 200px;
+}
+
+#permission-checker input {
+  width: 38%;
+  margin: 5px;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 25px;
+}
+
+#edit-form input {
+  width: 38%;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 10px;
+  font-size: 25px;
+  display: block;
+  margin: 0 auto;
+}
+
+#edit-form button {
+  width: 20%;
+  padding: 10px;
+}
+
+
+#permission-checker div {
+  width: 90%;
+  height: 80px;
+  margin: 10px auto;
+  color: white;
+  border: dashed 3px #2B2B2B;
+  border-radius: 10px;
+  background-color: green;
+}
+
+#permission-checker div h2 {
+text-align: center;
+margin-top: 20px;
+}
+
+.info-panel {
+  !height: 400px;
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.button-bar {
+  height: 50px;
+  background-color: #2B2B2B;
+}
+
+.button-bar span{
+  float: right;
+  width: 80%;
+}
+
+.button-bar button {
+  width: 80%;
+}
+
+.panel {
+  width: 90%;
+  min-height: 100px;
+  background-color: white;
+  margin: 0 auto;
+  margin-top: 20px;
+  border: solid 1px #2B2B2B;
+  border-radius: 10px;
+}
+
+.panel-heading {
+  font-size: 20px;
+  background-color: #2B2B2B;
+  color: white;
+  border-radius: 10px 10px 0 0 ;
+}
+
+.panel-body {
+  padding: 10px;
+}
+
+.green {
+  background-color: green;
+}
+
+.red {
+  background-color: darkred;
+}
+
+#edit-form {
+  width: 60%;
+  height: 500px;
+  text-align: center;
+  padding: 40px;
+  background-color: white;
+  border: solid 3px #2B2B2B;
+  border-radius: 10px;
+  display: block;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  margin: 50px auto;
+}
