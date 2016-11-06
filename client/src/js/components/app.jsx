@@ -17,7 +17,7 @@ var App = React.createClass({
     helper.initiateDB();
     helper.loadDummyDB(() => {
       helper.viewDB("movies");
-      helper.permissionChecker("distributor3", "China").then(() => console.log("YES"), () => console.log("NO"));
+      helper.permissionChecker("distributor1", "Goa").then(() => console.log("YES"), () => console.log("NO"));
       this.forceUpdate();
     });
     helper.getAllAreas((arr) => {

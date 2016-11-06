@@ -1,5 +1,4 @@
 var React = require('react');
-var Autocomplete = require('react-autocomplete');
 var helper = require('../helper.js');
 
 var PermissionChecker = React.createClass({
@@ -17,7 +16,9 @@ var PermissionChecker = React.createClass({
     //console.log("at componentWillReceiveProps");
     this.setState({
       subDist: nP.subDist,
-      allAreas: nP.allAreas
+      allAreas: nP.allAreas,
+      wellValue: "Result",
+      wellColor: "darkblue",
     });
   },
   getOptionList: function() {
@@ -30,20 +31,65 @@ var PermissionChecker = React.createClass({
     });
     return optionList;
   },
+  selectArea: function() {
+    let inValue = this.refs.area.value;
+    console.log("entered:", inValue);
+    if(this.state.allAreas.indexOf(inValue) > -1) {
+      let dist = this.refs.dist.value;
+      console.log("dist is :", dist);
+      helper.permissionChecker(dist, inValue).then(() => {
+        console.log("YES");
+        this.setState({
+          wellValue: "YES",
+          wellColor: "green",
+        });
+      }, () => {
+        console.log("NO");
+        this.setState({
+          wellValue: "NO",
+          wellColor: "darkred",
+        });
+      });
+    }else {
+      console.log("check input");
+    }
+  },
   render: function() {
     let optionList = this.getOptionList();
     return(
       <div id="permission-checker">
         <h4>Permission Checker</h4>
-        <select name="user" id="per-dist-select">
+        <select ref="dist" name="dist" id="per-dist-select">
           {optionList}
         </select>
-        <input />
-        <button>OK</button>
-        <div><h2>YES</h2></div>
+        <input type="text" ref="area" name="area" />
+        <button onClick={this.selectArea}>OK</button>
+        <div style={{
+            backgroundColor: this.state.wellColor
+          }}id="result-well"><h2>{this.state.wellValue}</h2></div>
       </div>
     )
   }
 });
 
 module.exports = PermissionChecker;
+
+/*
+
+<Autocomplete
+  value={this.state.value}
+  inputProps = {{name: "allAreas"}}
+  items = {this.state.allAreas}
+  getItemValue = {(item) => item}
+  shouldItemRender={Autocomplete.matchStateToTerm}
+  onChange={(event, value) => this.setState({ value })}
+  onSelect={value => this.setState({ value })}
+  renderItem={(item, isHighlighted) => (
+    <div
+      style={isHighlighted ? styles.highlightedItem : styles.item}
+      key={this.state.allAreas.indexOf(item)}
+    >{item}</div>
+  )}
+/>
+
+*/

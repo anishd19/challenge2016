@@ -82,7 +82,7 @@ header span {
 }
 
 #permission-checker input {
-  width: 92%;
+  width: 48%;
   margin: 5px;
   padding: 15px;
   border-radius: 10px;
@@ -93,7 +93,7 @@ header span {
 
 #permission-checker button {
   position: relative;
-  left: 48px;
+  left: 30px;
 }
 
 #edit-form input {
@@ -118,7 +118,7 @@ header span {
   color: white;
   border: dashed 3px #2B2B2B;
   border-radius: 10px;
-  background-color: green;
+  background-color: darkblue;
 }
 
 #result-well h2 {

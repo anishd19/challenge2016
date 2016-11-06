@@ -382,13 +382,13 @@ var permissionChecker = function(dist, area) {
               parentsArr.forEach(function(v, i) {
                 inIE(dist, v, "exclude", (res) => {
                   let bool = false;
-                  // console.log("res in F is", res.tempObj);
+                  console.log("res in F is", res.tempObj);
                   vaType = res.areaType;
                   let vtempObj = res.tempObj;
                   function foobar() {
                     if(vaType === "country") {
                       if(aaType === "province") {
-                          // console.log(vtempObj.province);
+                          console.log("vtempObj.province", vtempObj.province);
                           bool = (vtempObj.province === area);
                       }
                       if(aaType === "city") {
@@ -398,11 +398,14 @@ var permissionChecker = function(dist, area) {
 
                     if(vaType === "province") {
                       if(aaType === "city") {
-                        bool = (vtempObj.city === area);
+                        bool = (!vtempObj.city === area);
                       }
                     }
                   }
-                  if(res.result && !bool && !done) {
+
+                  foobar();
+
+                  if(res.result && bool && !done) {
                     flag = true;
                     done = true;
                     console.log("F is true");
@@ -419,6 +422,11 @@ var permissionChecker = function(dist, area) {
                       let childrenArr =[];
                       getChildren(area).then((cA) => {
                         childrenArr = cA;
+                        console.log("childrenArr", childrenArr);
+                        if(childrenArr.length === 0) {
+                          console.log("E is false");
+                          resolve();
+                        }
                         let len = childrenArr.length, c=0, flag = false, donee = false; //flag ==> it is there
                         childrenArr.forEach(function(v, i) {
                           inIE(dist, v, "exclude", (re) => {
