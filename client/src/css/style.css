@@ -102,7 +102,7 @@ header span {
   margin-top: 8px;
   border-radius: 10px;
   font-size: 25px;
-  display: none;
+  display: block;
   margin: 0 auto;
 }
 
@@ -183,10 +183,27 @@ margin-top: 20px;
   background-color: white;
   border: solid 3px #2B2B2B;
   border-radius: 10px;
-  display: block;
+  display: none;
   position: fixed;
   left: 0;
   right: 0;
   z-index: 1;
   margin: 50px auto;
+}
+
+#error-box {
+  width: 40%;
+  text-align: center;
+  color: white;
+  background-color: darkred;
+  border-radius: 10px;
+  margin: 0 auto;
+  font-size: 40px;
+  padding: 30px;
+  opacity: 0.5;
+  position: fixed;
+  left: 0;
+  right: 50%;
+  z-index: 2;
+  display: none;
 }

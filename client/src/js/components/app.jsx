@@ -10,7 +10,8 @@ var App = React.createClass({
     return {
       user: "admin",
       subDist: ["distributor1", "distributor2", "distributor3"],
-      allAreas: []
+      allAreas: [],
+      err: ""
     }
   },
   componentWillMount: function() {
@@ -41,11 +42,24 @@ var App = React.createClass({
       });
     });
   },
+  setError: function(err) {
+    if(err !== "") {
+      document.getElementById("error-box").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("error-box").style.display = "none"
+      }, 2000);
+    }else {
+      document.getElementById("error-box").style.display = "none";
+    }
+    this.setState({
+      err: err
+    });
+  },
   render: function() {
     return (
       <div>
         <div id="edit-form">
-          <EditForm toggleForm={toggleForm} user={this.state.user}></EditForm>
+          <EditForm toggleForm={toggleForm} user={this.state.user} errHandler={this.setError} allAreas={this.state.allAreas}></EditForm>
         </div>
         <header>
           <h1>Welcome {this.state.user}</h1>
@@ -60,8 +74,9 @@ var App = React.createClass({
           </span>
         </header>
         <div id="left-column">
-          <PermissionChecker subDist={this.state.subDist} allAreas={this.state.allAreas}></PermissionChecker>
+          <PermissionChecker subDist={this.state.subDist} errHandler={this.setError} allAreas={this.state.allAreas}></PermissionChecker>
           <SelfInfo user={this.state.user}></SelfInfo>
+          <div id="error-box">{this.state.err}</div>
         </div>
         <div id="right-column">
           <div id="scroll-area">

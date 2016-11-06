@@ -11,7 +11,8 @@ var EditForm = React.createClass({
         name:"",
         include: [],
         exclude: []
-      }
+      },
+      allAreas: []
     };
   },
   componentWillReceiveProps: function(nP) {
@@ -28,7 +29,8 @@ var EditForm = React.createClass({
     }
     foo().then(() => {
       this.setState({
-        possDist: pD
+        possDist: pD,
+        allAreas: nP.allAreas
       });
     })
   },
@@ -81,6 +83,62 @@ var EditForm = React.createClass({
     });
     return optionList;
   },
+  setInclude: function() {
+    let inValue = this.refs.area.value;
+    console.log("entered:", inValue);
+    if(this.state.allAreas.indexOf(inValue) > -1) {
+      let dist = this.props.user;
+      let infoData = this.state.infoData;
+      infoData.include.push(inValue);
+      console.log("include modified ", infoData.include);
+      console.log("dist is :", dist);
+      helper.permissionChecker(dist, inValue).then(() => {
+        console.log("YES");
+        this.props.errHandler("");
+        this.props.errHandler("That's a valid addition");
+        // this.setState({
+        //   infoData: infoData
+        // });
+        // console.log(this.state.infoData);
+        //this.forceUpdate();
+      }, () => {
+        console.log("NO");
+        this.props.errHandler("You do not have Permission. It is case sensitive");
+      });
+    }else {
+      console.log("check input");
+      console.log(this.props.errHandler);
+      this.props.errHandler("The area doesn't exist in our database. It is case sensitive");
+    }
+  },
+  setExclude: function() {
+    let inValue = this.refs.area.value;
+    console.log("entered:", inValue);
+    if(this.state.allAreas.indexOf(inValue) > -1) {
+      let dist = this.props.user;
+      let infoData = this.state.infoData;
+      infoData.exclude.push(inValue);
+      console.log("exclude modified ", infoData.exclude);
+      console.log("dist is :", dist);
+      helper.permissionChecker(dist, inValue).then(() => {
+        console.log("YES");
+        this.props.errHandler("");
+        this.props.errHandler("That's a valid addition");
+        // this.setState({
+        //   infoData: infoData
+        // });
+        // console.log(this.state.infoData);
+        //this.forceUpdate();
+      }, () => {
+        console.log("NO");
+        this.props.errHandler("You do not have Permission. It is case sensitive");
+      });
+    }else {
+      console.log("check input");
+      console.log(this.props.errHandler);
+      this.props.errHandler("The area doesn't exist in our database. It is case sensitive");
+    }
+  },
   render: function() {
     let optionList = this.getOptionList();
     return(
@@ -90,14 +148,14 @@ var EditForm = React.createClass({
           {optionList}
         </select>
         <div id="foo">
-          <input />
-          <button className="green">include</button>
-          <button className="red">exclude</button>
+          <input type="text" ref="area" name="area" />
+          <button className="green" onClick={this.setInclude}>include</button>
+          <button className="red" onClick={this.setExclude}>exclude</button>
         </div>
         <div>
           <InfoPanel infoData={this.state.infoData}></InfoPanel>
         </div>
-        <div id="foo">
+        <div id="bar">
           <button>Submit</button>
           <button onClick={this.props.toggleForm}>Dicard</button>
         </div>

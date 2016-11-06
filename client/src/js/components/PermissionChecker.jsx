@@ -39,6 +39,7 @@ var PermissionChecker = React.createClass({
       console.log("dist is :", dist);
       helper.permissionChecker(dist, inValue).then(() => {
         console.log("YES");
+        this.props.errHandler("");
         this.setState({
           wellValue: "YES",
           wellColor: "green",
@@ -52,6 +53,8 @@ var PermissionChecker = React.createClass({
       });
     }else {
       console.log("check input");
+      console.log(this.props.errHandler);
+      this.props.errHandler("The area doesn't exist in our database. It is case sensitive");
     }
   },
   render: function() {
