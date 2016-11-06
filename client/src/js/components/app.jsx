@@ -17,6 +17,7 @@ var App = React.createClass({
     helper.initiateDB();
     helper.loadDummyDB(() => {
       helper.viewDB("movies");
+      helper.permissionChecker("distributor3", "China").then(() => console.log("YES"), () => console.log("NO"));
       this.forceUpdate();
     });
     helper.getAllAreas((arr) => {
@@ -27,6 +28,8 @@ var App = React.createClass({
   },
   componentWillReceiveProps: function(nP) {
 
+  },
+  componentDidMount: function() {
   },
   selectMainUser: function() {
     let u = this.refs.user.value;

@@ -79,7 +79,6 @@ var getInfoPanelData = function(user, cb) {
 };
 
 var getAllAreas = function(cb) {
-  console.log("at getAllAreas");
   let arr = [];
   function insertIntoArr(str) {
     if(arr.indexOf(str) < 0) {
@@ -111,12 +110,346 @@ var getAllAreas = function(cb) {
   });
 };
 
-var isItincluded = function(dist, area) {
+var inIE = function(dist, area, option, cb) {
+  let distData = {},
+      areaType = "", c = 0;
+
+  function foo() {
+    return new Promise(function(resolve, reject) {
+      // console.log("dist in Promise", dist);
+      getInfoPanelData(dist, (dD) => {
+        distData = dD;
+        //console.log("dD", dD);
+        if(++c == 2) resolve();
+      });
+      //console.log("area in promise", area);
+      getAreaType(area, (aT) => {
+        areaType = aT.areaType;
+        if(++c == 2) resolve();
+      });
+    });
+  }
+
+  foo().then(() => {
+    // console.log("distData", distData);
+    // console.log("areaType", areaType);
+
+    let eArr = distData[option];
+    let eCities = eArr.map((o) => o.city);
+    let eProvinces = eArr.map((o) => o.province);
+    let eCountries = eArr.map((o) => o.country);
+
+    function bar() {
+      return new Promise(function(resolve, reject) {
+        switch(true) {
+          case areaType === "city":
+            // console.log("idx is ", eCities.indexOf(area));
+            // console.log("eArr idx is", eArr[eCities.indexOf(area)]);
+            if(eCities.indexOf(area) > -1)
+              resolve({
+                result: true,
+                areaType: areaType,
+                tempObj: eArr[eCities.indexOf(area)]
+              });
+            else resolve({
+              result: false,
+              areaType: areaType,
+              tempObj: {}
+            });
+            break;
+          case areaType === "province":
+            // console.log("idx is ", eProvinces.indexOf(area));
+            // console.log("eArr idx is", eArr[eProvinces.indexOf(area)]);
+            if(eProvinces.indexOf(area) > -1)
+            resolve({
+              result: true,
+              areaType: areaType,
+              tempObj: eArr[eProvinces.indexOf(area)]
+            });
+            else resolve({
+              result: false,
+              areaType: areaType,
+              tempObj: {}
+            });
+            break;
+          case areaType === "country":
+            // console.log("idx is ", eCountries.indexOf(area));
+            // console.log("eArr idx is", eArr[eCountries.indexOf(area)]);
+            if(eCountries.indexOf(area) > -1)
+            resolve({
+              result: true,
+              areaType: areaType,
+              tempObj: eArr[eCountries.indexOf(area)]
+            });
+            else resolve({
+              result: false,
+              areaType: areaType,
+              tempObj: {}
+            });
+            break;
+          default:
+            console.log("--- in default ---");
+            break;
+        }
+      });
+    }
+
+    bar().then((result) => {
+      cb(result);
+    });
+
+  });
+
 
 };
 
-var isItExcluded = function(dist, area) {
+var getAreaType = function(area, cb) {
+  let areaType;
+  db.cities.find({country: area}, function(err, docs) {
+    if(docs.length === 0) {
+      db.cities.find({province: area}, function(er, doc) {
+        if(doc.length === 0) {
+          db.cities.find({city: area}, function(e, d) {
+            if(d.length === 0) {
+            }else {
+              areaType = "city";
+              cb({
+                areaType: areaType,
+                doc: d
+              });
+            }
+          });
+        }else {
+          areaType = "province";
+          cb({
+            areaType: areaType,
+            doc: doc
+          });
+        }
+      });
+    }else {
+      areaType = "country";
+      cb({
+        areaType: areaType,
+        doc: docs
+      });
+    }
+  });
+};
 
+var getParents = function(area) {
+  return new Promise(function(resolve, reject) {
+    let parents = [];
+    let areaType = "";
+    let tempObj = {};
+
+    getAreaType(area, (aT) => {
+      areaType = aT.areaType;
+      db.cities.findOne({$or: [{country: area}, {city: area}, {province: area}]}, {_id: 0}, function(err, docs) {
+        tempObj = docs;
+        switch(areaType) {
+          case "city":
+            parents.push(tempObj.province);
+            parents.push(tempObj.country);
+            resolve({
+              parents: parents,
+              tempObj: tempObj,
+              areaType: areaType
+            });
+            break;
+          case "province":
+            parents.push(tempObj.country);
+            resolve({
+              parents: parents,
+              tempObj: tempObj,
+              areaType: areaType
+            });
+            break;
+          case "country":
+            resolve({
+              parents: parents,
+              tempObj: tempObj,
+              areaType: areaType
+            });
+            break;
+          default:
+            resolve({
+              parents: parents,
+              tempObj: tempObj,
+              areaType: areaType
+            });
+            console.log("--- in default ---");
+            break;
+        }
+      });
+    });
+  });
+};
+
+var getChildren = function(area) {
+  return new Promise(function(resolve, reject) {
+    let children = [];
+    let areaType = "";
+    let tempArr = [];
+
+    getAreaType(area, (aT) => {
+      areaType = aT;
+      db.cities.find({$or: [{country: area}, {city: area}, {province: area}]}, {_id: 0}, function(err, docs) {
+        tempArr = docs;
+        switch(areaType) {
+          case "city":
+            resolve(children);
+            break;
+          case "province":
+            tempArr.forEach(function(o, i) {
+              children.push(o.city);
+            });
+            resolve(children);
+            break;
+          case "country":
+            tempArr.forEach(function(o, i) {
+              children.push(o.city);
+              children.push(o.province);
+            });
+            resolve(children);
+            break;
+          default:
+            console.log("--- in default ---");
+            resolve(children);
+            break;
+        }
+      });
+    });
+  });
+};
+
+var permissionChecker = function(dist, area) {
+  return new Promise(function(resolve, reject) {
+    inIE(dist, area, "include", (res) => {
+      console.log("in A");
+      if(!res.result) {
+        console.log("A is false");
+        console.log("in C");
+        let parentsArr = [];
+        getParents(area).then((pA) => {
+          parentsArr = pA.parents;
+          if(parentsArr.length === 0){
+            console.log("C is false");
+            reject();
+          }
+          let len = parentsArr.length, c = 0, isPresent = false, fooCalled = false;
+          // console.log("len is ", len);
+          parentsArr.forEach(function(v, i) {
+            // console.log("v is ", v);
+            inIE(dist, v, "include", (res) => {
+              // console.log("res is ", res.result);
+              if(res.result) {
+                isPresent = true;
+              }
+              // console.log("isPresent in C is ", isPresent);
+              if(++c === (len) && !isPresent) {
+                console.log("C is false");
+                reject();
+              }
+              if(isPresent && !fooCalled) {
+                console.log("C is true");
+                fooCalled = true;
+                foo();
+              }
+            });
+            //return (typeof(rV) ? true : rV);
+          });
+
+        });
+      }else {
+        console.log("A is true");
+        foo();
+      }
+      function foo() {
+        console.log("in Foo");
+        inIE(dist, area, "exclude", (res) => {
+          console.log("in D");
+          if(!res.result) {
+            console.log("D is false");
+            console.log("in F");
+            let parentsArr = [];
+            let atempObj = res.tempObj;
+            let aaType = res.areaType;
+            getParents(area).then((pA) => {
+              parentsArr = pA.parents;
+              let vaType = "";
+              let len = parentsArr.length, c = 0, flag = false, done = false; //flag =+> it is there
+              parentsArr.forEach(function(v, i) {
+                inIE(dist, v, "exclude", (res) => {
+                  let bool = false;
+                  // console.log("res in F is", res.tempObj);
+                  vaType = res.areaType;
+                  let vtempObj = res.tempObj;
+                  function foobar() {
+                    if(vaType === "country") {
+                      if(aaType === "province") {
+                          // console.log(vtempObj.province);
+                          bool = (vtempObj.province === area);
+                      }
+                      if(aaType === "city") {
+                        bool = (vtempObj.city === area);
+                      }
+                    }
+
+                    if(vaType === "province") {
+                      if(aaType === "city") {
+                        bool = (vtempObj.city === area);
+                      }
+                    }
+                  }
+                  if(res.result && !bool && !done) {
+                    flag = true;
+                    done = true;
+                    console.log("F is true");
+                    reject();
+                  }
+                  ++c;
+                  if(!flag && c == len) {
+                    console.log("F is false");
+                    console.log("in E");
+                    if(aaType === "city") {
+                      console.log("E is false");
+                      resolve();
+                    }else{
+                      let childrenArr =[];
+                      getChildren(area).then((cA) => {
+                        childrenArr = cA;
+                        let len = childrenArr.length, c=0, flag = false, donee = false; //flag ==> it is there
+                        childrenArr.forEach(function(v, i) {
+                          inIE(dist, v, "exclude", (re) => {
+                            if(re && !done) {
+                              flag = true;
+                              donee = true;
+                              console.log("E is true");
+                              reject();
+                            }
+                            ++c;
+                            if(!flag && !done) {
+                              donee = true;
+                              console.log("E is false");
+                              resolve();
+                            }
+                          });
+                        });
+                      });
+                    }
+                  }
+                });
+              });
+            });
+          }else {
+            console.log("D is true");
+            reject();
+          }
+        });
+      }
+    });
+  });
 };
 
 var createDistObj = function(fromUser, toUser, include, exclude) {
@@ -205,10 +538,12 @@ module.exports = {
   viewDB: viewDB,
   getSubDist: getSubDist,
   getInfoPanelData: getInfoPanelData,
-  getAllAreas: getAllAreas
+  getAllAreas: getAllAreas,
+  inIE: inIE,
+  getParents: getParents,
+  getChildren: getChildren,
+  permissionChecker: permissionChecker
 };
-
-//initiateDB();
 
 db.cities.loadDatabase();
 db.movies.loadDatabase();
