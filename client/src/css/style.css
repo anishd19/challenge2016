@@ -71,12 +71,29 @@ header span {
   min-height: 200px;
 }
 
-#permission-checker select, #permission-checker input {
-  width: 38%;
+#permission-checker select {
+  width: 27%;
   margin: 5px;
   padding: 15px;
   border-radius: 10px;
   font-size: 25px;
+  position: relative;
+  left: 27px;
+}
+
+#permission-checker input {
+  width: 92%;
+  margin: 5px;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 25px;
+  position: relative;
+  left: 27px;
+}
+
+#permission-checker button {
+  position: relative;
+  left: 48px;
 }
 
 #edit-form input {
@@ -85,7 +102,7 @@ header span {
   margin-top: 8px;
   border-radius: 10px;
   font-size: 25px;
-  display: block;
+  display: none;
   margin: 0 auto;
 }
 
@@ -94,8 +111,7 @@ header span {
   padding: 10px;
 }
 
-
-#permission-checker div {
+#result-well {
   width: 90%;
   height: 80px;
   margin: 10px auto;
@@ -105,7 +121,7 @@ header span {
   background-color: green;
 }
 
-#permission-checker div h2 {
+#result-well h2 {
 text-align: center;
 margin-top: 20px;
 }
